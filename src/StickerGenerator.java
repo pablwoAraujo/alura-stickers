@@ -28,7 +28,7 @@ public class StickerGenerator {
 		graphics.drawImage(originalImage, 0, 0, null);
 
 		// configurar fonte
-		var font = new Font(Font.SANS_SERIF, Font.BOLD, 64);
+		var font = new Font("Comic Sans MS", Font.BOLD, 128);
 		graphics.setColor(Color.YELLOW);
 		graphics.setFont(font);
 
@@ -39,7 +39,7 @@ public class StickerGenerator {
 		int textWidth = (int) rectangle.getWidth();
 
 		int startingPosition = (originalWidth - textWidth) / 2;
-		graphics.drawString(message, startingPosition, newHeight - 100);
+		graphics.drawString(message, startingPosition, newHeight - 50);
 
 		// escrever a nova imagem em um arquivo
 		ImageIO.write(newImage, "png", new File(newFileName));
