@@ -1,4 +1,6 @@
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -26,12 +28,16 @@ public class App {
 		JsonParser parser = new JsonParser();
 		List<Map<String, String>> filmList = parser.parse(body);
 
+		StickerGenerator stickerGenerator = new StickerGenerator();
+
 		// exibir e manipular os dados
 		for (Map<String, String> film : filmList) {
-			System.out.println(ANSI_BOLD + "Title: " + ANSI_REGULAR + film.get("title"));
-			System.out.println(ANSI_BOLD + "URL image: " + ANSI_REGULAR + film.get("image"));
-
+			String title = film.get("title");
+			String image = film.get("image");
 			double rating = Double.parseDouble(film.get("imDbRating"));
+
+			System.out.println(ANSI_BOLD + "Title: " + ANSI_REGULAR + title);
+			System.out.println(ANSI_BOLD + "URL image: " + ANSI_REGULAR + image);
 			System.out.print(ANSI_BOLD + "Rating: " + rating + " ");
 
 			int stars = (int) rating;
@@ -46,7 +52,11 @@ public class App {
 
 			System.out.println(ANSI_REGULAR);
 			System.out.println();
-		}
 
+			String titleWithoutSpecialCharacters = title.replaceAll("[^a-zA-Z0-9]+", "");
+
+			InputStream inputStream = new URL(image).openStream();
+			stickerGenerator.generator(inputStream, "TOPZERA", "assets/" + titleWithoutSpecialCharacters + ".png");
+		}
 	}
 }
