@@ -1,7 +1,12 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -40,6 +45,21 @@ public class StickerGenerator {
 
 		int startingPosition = (originalWidth - textWidth) / 2;
 		graphics.drawString(message, startingPosition, newHeight - 50);
+
+		FontRenderContext context = graphics.getFontRenderContext();
+		var textLayout = new TextLayout(message, font, context);
+
+		Shape outline = textLayout.getOutline(null);
+		AffineTransform transform = graphics.getTransform();
+		transform.translate(startingPosition, newHeight - 50);
+		graphics.setTransform(transform);
+
+		var outlineStroke = new BasicStroke(originalWidth * 0.004f);
+		graphics.setStroke(outlineStroke);
+
+		graphics.setColor(Color.BLACK);
+		graphics.draw(outline);
+		graphics.setClip(outline);
 
 		// escrever a nova imagem em um arquivo
 		ImageIO.write(newImage, "png", new File(newFileName));
