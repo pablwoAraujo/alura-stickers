@@ -1,3 +1,5 @@
+package stickers;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -64,4 +66,5 @@ public class StickerGenerator {
 		// escrever a nova imagem em um arquivo
 		ImageIO.write(newImage, "png", new File(newFileName));
 	}
+
 }

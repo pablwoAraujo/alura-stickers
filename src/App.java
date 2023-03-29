@@ -1,57 +1,36 @@
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
-import java.util.Map;
+
+import extractors.ContentExtractor;
+import extractors.ImDBContentExtractor;
+import extractors.NASAContentExtractor;
+import http.Client;
+import models.Content;
+import stickers.StickerGenerator;
 
 public class App {
 
-	public static final String ANSI_RED = "\u001B[41m";
-	public static final String ANSI_REGULAR = "\u001B[m";
-	public static final String ANSI_BOLD = "\u001B[1m";
-
 	public static void main(String[] args) throws Exception {
-		// fazer uma conexão http e buscar o top 250
 		String urlTopMovies = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
-		HttpClient client = HttpClient.newHttpClient();
-		URI address = URI.create(urlTopMovies);
+		String nasaURL = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json";
 
-		HttpRequest request = HttpRequest.newBuilder(address).GET().build();
-		HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+		var httpClient = new Client();
+		String imdbBody = httpClient.getBody(urlTopMovies);
+		String nasaBody = httpClient.getBody(nasaURL);
 
-		// extrair so os dados que interessam (titulo, poster, classificação)
-		String body = response.body();
-		JsonParser parser = new JsonParser();
-		List<Map<String, String>> filmList = parser.parse(body);
+		ContentExtractor nasaExtractor = new NASAContentExtractor();
+		ContentExtractor imdbExtractor = new ImDBContentExtractor();
+
+		List<Content> imdbContentList = imdbExtractor.extractor(imdbBody);
+		List<Content> nasaContentList = nasaExtractor.extractor(nasaBody);
 
 		StickerGenerator stickerGenerator = new StickerGenerator();
 
-		// exibir e manipular os dados
-		for (Map<String, String> film : filmList) {
-			String title = film.get("title");
-			String image = film.get("image");
-			double rating = Double.parseDouble(film.get("imDbRating"));
-
-			System.out.println(ANSI_BOLD + "Title: " + ANSI_REGULAR + title);
-			System.out.println(ANSI_BOLD + "URL image: " + ANSI_REGULAR + image);
-			System.out.print(ANSI_BOLD + "Rating: " + rating + " ");
-
-			int stars = (int) rating;
-			for (int i = 0; i < stars; i++) {
-				System.out.print(ANSI_RED + "❤️");
-			}
-
-			int emptyStars = 10 - stars;
-			for (int i = 0; i < emptyStars; i++) {
-				System.out.print("🤍");
-			}
-
-			System.out.println(ANSI_REGULAR);
-			System.out.println();
+		for (Content content : nasaContentList) {
+			String title = content.getTitle();
+			String image = content.getUrlImage();
+			System.out.println(title + " | " + image);
 
 			String titleWithoutSpecialCharacters = title.replaceAll("[^a-zA-Z0-9]+", "");
 
