@@ -28,8 +28,8 @@ public class App {
 		StickerGenerator stickerGenerator = new StickerGenerator();
 
 		for (Content content : nasaContentList) {
-			String title = content.getTitle();
-			String image = content.getUrlImage();
+			String title = content.title();
+			String image = content.urlImage();
 			System.out.println(title + " | " + image);
 
 			String titleWithoutSpecialCharacters = title.replaceAll("[^a-zA-Z0-9]+", "");
