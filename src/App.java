@@ -2,9 +2,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import enums.API;
 import extractors.ContentExtractor;
-import extractors.ImDBContentExtractor;
-import extractors.NASAContentExtractor;
 import http.Client;
 import models.Content;
 import stickers.StickerGenerator;
@@ -12,22 +11,18 @@ import stickers.StickerGenerator;
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		String urlTopMovies = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
-		String nasaURL = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json";
+		API api = API.NASA;
 
-		var httpClient = new Client();
-		String imdbBody = httpClient.getBody(urlTopMovies);
-		String nasaBody = httpClient.getBody(nasaURL);
+		String url = api.getUrl();
+		Client httpClient = new Client();
 
-		ContentExtractor nasaExtractor = new NASAContentExtractor();
-		ContentExtractor imdbExtractor = new ImDBContentExtractor();
+		String body = httpClient.getBody(url);
+		ContentExtractor extractor = api.getExtractor();
 
-		List<Content> imdbContentList = imdbExtractor.extractor(imdbBody);
-		List<Content> nasaContentList = nasaExtractor.extractor(nasaBody);
-
+		List<Content> contentList = extractor.extractor(body);
 		StickerGenerator stickerGenerator = new StickerGenerator();
 
-		for (Content content : nasaContentList) {
+		for (Content content : contentList) {
 			String title = content.title();
 			String image = content.urlImage();
 			System.out.println(title + " | " + image);
