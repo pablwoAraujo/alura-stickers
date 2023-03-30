@@ -11,7 +11,7 @@ import stickers.StickerGenerator;
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		API api = API.NASA;
+		API api = API.LANGUAGES_API;
 
 		String url = api.getUrl();
 		Client httpClient = new Client();
