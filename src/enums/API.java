@@ -10,7 +10,7 @@ public enum API {
 			new ImDBContentExtractor()),
 	NASA("https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json",
 			new NASAContentExtractor()),
-	LANGUAGES_API("http://localhost:8080/languages",
+	LANGUAGES_API("https://alura-languages-api-production.up.railway.app/languages",
 			new LanguagesContentExtractor());
 
 	private String url;
